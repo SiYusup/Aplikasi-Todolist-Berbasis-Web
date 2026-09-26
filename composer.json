@@ -1,0 +1,26 @@
+{
+    "name": "u-crazy/aplikasi-todolist",
+    "description": "Belajar Vibe Coding dengan project aplikasi todolist",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "UCrazy\\AplikasiTodolist\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "UCrazy",
+            "email": "finder.ucup@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.7",
+        "ramsey/uuid": "^4.9",
+        "vlucas/valitron": "^1.4",
+        "catfan/medoo": "^2.6",
+        "bramus/router": "^1.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11"
+    }
+}

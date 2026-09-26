@@ -1,0 +1,437 @@
+{
+  "version": 1,
+  "skills": {
+    "analyze-growth": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/workflows/analyze-growth/SKILL.md",
+      "computedHash": "674ea8b61b00ec5f907612887c92e87623fad153d7b1cc61c3e9caa5db1fb2bf"
+    },
+    "csharp": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/csharp/SKILL.md",
+      "computedHash": "7d7c9f9b977a01700b0bf2810774fa69b5b3140eebf6bb3d6ede63917210be84"
+    },
+    "define-strategy": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/workflows/define-strategy/SKILL.md",
+      "computedHash": "90891a46301b9301be5cd6fc64fea244679a2b75322ecb7d0a492fb5b3123bd5"
+    },
+    "discover": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/workflows/discover/SKILL.md",
+      "computedHash": "584442d1af24117160a39a9aee75ae77662bd910265dc2b8dcf6c9106c6ead73"
+    },
+    "documentation": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/documentation/SKILL.md",
+      "computedHash": "ac963d0cf64ae7b40a6a01f15ec03bedf6d0362cd5c934ac90ae8f0c94189705"
+    },
+    "dotnet-core": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/dotnet-core/SKILL.md",
+      "computedHash": "29bcd659de54887b12b512dca4c704da9816237dae10e126883daf9200a26a25"
+    },
+    "humanize-text": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/humanize-text/SKILL.md",
+      "computedHash": "4fb2d84d8b556a9d62c2a15f7a2ac6bafb6e4437b958a782adca09349d8923d9"
+    },
+    "javascript": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/javascript/SKILL.md",
+      "computedHash": "dff5d3917221b28f780c70630b9b7747ff508efbb62b854d154b57dd804f5b51"
+    },
+    "jira-report-comment": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/jira-report-comment/SKILL.md",
+      "computedHash": "2e0bfca5cd9b04196a2d9417a6c639c9c036d4314b860a25fed84654fca78727"
+    },
+    "legacy-modernization": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/legacy-modernization/SKILL.md",
+      "computedHash": "68561417367cd5b5a933cf0802b0b21166c8f1e8e28e26621b2f9bc14164d9b1"
+    },
+    "nestjs": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/nestjs/SKILL.md",
+      "computedHash": "5a510e33433ba3323628dde151ef06319fc0c5dcebb856134237e63acd3ebca1"
+    },
+    "nextjs": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/nextjs/SKILL.md",
+      "computedHash": "097a0aeba3f20bf61aaa88a1bdbda8e87c8d3dcd58cbc9a158565f89d713bedd"
+    },
+    "php-pro": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/php-pro/SKILL.md",
+      "computedHash": "1cd5289325d0924d6fca4f950711bc9b63d873338cf3b4acd00db62603aebeda"
+    },
+    "plan-launch": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/workflows/plan-launch/SKILL.md",
+      "computedHash": "a4140376f8de3d216b5556a4318d9ca70f0fb05b5e4b483a1693765fbda97593"
+    },
+    "pm-aarrr": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-aarrr/SKILL.md",
+      "computedHash": "65b127660749318c1cd2559d9c5ea4036d31da347b90defd1202a8aa2e20b2a9"
+    },
+    "pm-abtest": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-abtest/SKILL.md",
+      "computedHash": "dcd590813a87b53749cd51fa47d8c500dbc2b9dba4731315731f1d9b963f9d44"
+    },
+    "pm-agile": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/04-risk-management/pm-agile/SKILL.md",
+      "computedHash": "0221a07e8008fc5f98b6af590e8cd939943e3f7874ea403c0ccbc8d2d88e9d07"
+    },
+    "pm-brainstorm": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-brainstorm/SKILL.md",
+      "computedHash": "3ea18ad6c1d8262388c5ba4a39ce0e9c4ff2ce444af7e955b79f32691f83194e"
+    },
+    "pm-brand-motion": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/02-solution-design/pm-brand-motion/SKILL.md",
+      "computedHash": "b5a5b3f09773bcb79131d043ed1601844287f23502eb474a37d0e45d3b9de669"
+    },
+    "pm-business-model": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/05-product-strategy/pm-business-model/SKILL.md",
+      "computedHash": "cf5336e5cef9a8a8a9a8455570c31e3b56cc8a3ca880a78a2366991144de469e"
+    },
+    "pm-career-coach": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/06-career/pm-career-coach/SKILL.md",
+      "computedHash": "df02be0711c447d36018a4f3df183f1b2449fca85dffd692ac3e972392c8096c"
+    },
+    "pm-change": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/04-risk-management/pm-change/SKILL.md",
+      "computedHash": "94ce0d0e602929a6544a263d762b7295a6ec3a15e459d8c95ab2999d640ba320"
+    },
+    "pm-clarify": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-clarify/SKILL.md",
+      "computedHash": "24d5565e948508077e121eb7fd1408bdb9d78a97817f47812a82ec4c8957c57b"
+    },
+    "pm-competitor": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-competitor/SKILL.md",
+      "computedHash": "52d73b4ab46354007bb042bed4c3dda764613c4f40c37174093a1c2b49bbab23"
+    },
+    "pm-cross": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/04-risk-management/pm-cross/SKILL.md",
+      "computedHash": "cb6c85528f2c8b436f5fe13bca2caefeb37c71de7dbd0b912ab904bfc4456515"
+    },
+    "pm-data": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/02-solution-design/pm-data/SKILL.md",
+      "computedHash": "5db05c7948d4f36cda38baa6001b749225d0665c66e69dcdde6ff87f9e840ea9"
+    },
+    "pm-decision": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/05-product-strategy/pm-decision/SKILL.md",
+      "computedHash": "8e407f6668013f031d5b22b8048030d94142ca012448518bcff488cecc781d9c"
+    },
+    "pm-demand": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-demand/SKILL.md",
+      "computedHash": "8d1e4fff8179c3ceec90b62bb915b41ac127370f70b4f2d288c90c97f7c47bf7"
+    },
+    "pm-docs": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/02-solution-design/pm-docs/SKILL.md",
+      "computedHash": "819c8bfcbd65cbf10deed73024991735105aa71667e8b62f553836eb424b0c4b"
+    },
+    "pm-evidence-audit": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/00-tools/pm-evidence-audit/SKILL.md",
+      "computedHash": "058f1b53cc5f2e97f899f595f851138284b10cba43e80dd3496a80bb87411226"
+    },
+    "pm-feature": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/02-solution-design/pm-feature/SKILL.md",
+      "computedHash": "604923d9d3790b6dca9a74b0cc40a39b314208dc6fd84092ee5fd1353e99e239"
+    },
+    "pm-feedback": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-feedback/SKILL.md",
+      "computedHash": "8b102130d8720cc88817c9906ce0f8681e8b2ee2b52d6a03809815fbe583b56b"
+    },
+    "pm-funnel": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/05-product-strategy/pm-funnel/SKILL.md",
+      "computedHash": "ea3831d892936cdb4a52982b9930e67918343e2426eaeecee8eb6065926f157a"
+    },
+    "pm-geo": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-geo/SKILL.md",
+      "computedHash": "c2c3501fcf300bcf1d43c9969a25c265d842e56c60c7d554f10a2765c623dd8d"
+    },
+    "pm-growth": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-growth/SKILL.md",
+      "computedHash": "3151a6b2b3f783c002a4e8aa1eb44aaf5b6a9a9d6d24fc36c03d5e4cc9ac6b65"
+    },
+    "pm-interview": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-interview/SKILL.md",
+      "computedHash": "15dd242d48292e054e4dc037d7111e316a875692ffaaf7af9e44804363a0bf20"
+    },
+    "pm-interview-prep": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/06-career/pm-interview-prep/SKILL.md",
+      "computedHash": "97c305d7226d78c78825780a2c6645c680793a966f9cab6c937c0cbaaf2a47df"
+    },
+    "pm-iteration": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-iteration/SKILL.md",
+      "computedHash": "cfcf9938f7fb4a3eb2ef45577c2e7f9525c1ad09b7f8a2be24eadaf332b3773f"
+    },
+    "pm-journey": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-journey/SKILL.md",
+      "computedHash": "c3357983bb2bce20a41412b10a75e5603a92e49958b1fd8435b7a73d25dc99ab"
+    },
+    "pm-market": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-market/SKILL.md",
+      "computedHash": "cfc3deb4169171008a7cc9a46e59701227f13e5e61f5d1469697ece488af725c"
+    },
+    "pm-mvp": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-mvp/SKILL.md",
+      "computedHash": "131c95d26bedb6ba6681f0c5bf158ffb10784ad3ac7e036be6556026d8c9c150"
+    },
+    "pm-okr": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-okr/SKILL.md",
+      "computedHash": "6dcf02510ce7e5ac0969761852f759a44cdfc4e8719d11550d58bfa3b328c301"
+    },
+    "pm-pool": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-pool/SKILL.md",
+      "computedHash": "2b015ae9ad934adb9441c85606e37ee7a8cc456d271166f6b01cf6418e8940fe"
+    },
+    "pm-portfolio": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/05-product-strategy/pm-portfolio/SKILL.md",
+      "computedHash": "2fae216846b8b458087e7fe9bf9ed784a79d4503160ed81ffb4e453397905b0c"
+    },
+    "pm-position": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/02-solution-design/pm-position/SKILL.md",
+      "computedHash": "eca4f00fa47b287425ac10f10c9ae625333ec6ce6f39d8716050213398a3c1e4"
+    },
+    "pm-prd-review": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/02-solution-design/pm-prd-review/SKILL.md",
+      "computedHash": "c19e2cc419871eea025551013ed2f64f5e7437a49a0028ed720dc80307c2c19e"
+    },
+    "pm-preview": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/pm-preview/SKILL.md",
+      "computedHash": "60560d0d339456ebde271dfd3e37d73addd803c92eff8db0a42d605f69410fc8"
+    },
+    "pm-priority": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-priority/SKILL.md",
+      "computedHash": "5557ddfd5522486b4853c60c1b80e57c78f3d7fbc790e19b346269ec5e7b6c08"
+    },
+    "pm-proto": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/02-solution-design/pm-proto/SKILL.md",
+      "computedHash": "f4ecb442cc8d28d2685495e357ce66968efbd08b98fbde89dbc97d1b624d5994"
+    },
+    "pm-release": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/04-risk-management/pm-release/SKILL.md",
+      "computedHash": "fb25cddbff1786f73456767b1770d610901b41191297a63722db99d5318206d7"
+    },
+    "pm-report": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-report/SKILL.md",
+      "computedHash": "74e380ae37333b3740557ea00af5db958a4413ca9ac36e00b957cbe41305e249"
+    },
+    "pm-resource": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/05-product-strategy/pm-resource/SKILL.md",
+      "computedHash": "ea2762d363df181f72234a8374f1db233f6aa1e2ee671711759af57f6dd5407c"
+    },
+    "pm-resume": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/06-career/pm-resume/SKILL.md",
+      "computedHash": "965c99330a2981ca7680fb211c155cbb28c615de514465cfa24e7e090a9a53fe"
+    },
+    "pm-retro": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-retro/SKILL.md",
+      "computedHash": "6d9118374242cf1eda11025e15d90d03874867265619027689e9a07354b7ae09"
+    },
+    "pm-risk": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/04-risk-management/pm-risk/SKILL.md",
+      "computedHash": "1173b57ea74a566ed29599f6b340bd12e32b9129f131b2aee0be91b0d1dae91d"
+    },
+    "pm-roadmap": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/03-growth-iteration/pm-roadmap/SKILL.md",
+      "computedHash": "365cbb45e9032d6a1811eaac771c329bfdaaa83337109446f7714dbce298bcd5"
+    },
+    "pm-search": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/01-demand-insight/pm-search/SKILL.md",
+      "computedHash": "c4f493c0e647990181de3b076d6f19ff3ec628ccbdf67e28282d3323b4ba1fdb"
+    },
+    "pm-selfcheck": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/00-tools/pm-selfcheck/SKILL.md",
+      "computedHash": "3ee25762d4544733bd2fd8bd6678c5f4d1ee24f7e0bdd03c9a5186bb28a41b3d"
+    },
+    "pm-tech": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/02-solution-design/pm-tech/SKILL.md",
+      "computedHash": "0fea2443deeaf824e588f01d9cf5049d6df15f5cfb99a125fb031fe9115171b0"
+    },
+    "pm-user-story": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/02-solution-design/pm-user-story/SKILL.md",
+      "computedHash": "c0570cc587f78495182c093d849bc0dfe026fcf80c85127c3f4cc64924a12ef9"
+    },
+    "python": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/python/SKILL.md",
+      "computedHash": "f347557273abce40b172d912f34766b4354e13414b33fb4b8f35ec221c93c004"
+    },
+    "react": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react/SKILL.md",
+      "computedHash": "19ebe740e89c165b089ec4c7b4e874b2f358d95b679b42ecca54a8470055318d"
+    },
+    "simple-english": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/simple-english/SKILL.md",
+      "computedHash": "66a9f163f94537a01b97f121d58d49cf8df2d45b04160b2e52e77199e6ecaaec"
+    },
+    "spec-mining": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/spec-mining/SKILL.md",
+      "computedHash": "1d2a12f0c54ca40a996ad3ef2d7f729ca3a69fe0d0f86abd2c2b6423bac186e6"
+    },
+    "start-super-pm": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/start-super-pm/SKILL.md",
+      "computedHash": "9105cce2e139f3670f3b2a6f5cc12f652fd7d97169e302a267bb7f5caab50adb"
+    },
+    "steve-jobs-perspective": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/07-experts/steve-jobs-perspective/SKILL.md",
+      "computedHash": "f0232f7c101d62f5ecd76e62f649df95ddeb61f413011b2d8f43b6fddabc5963"
+    },
+    "super-pm": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/SKILL.md",
+      "computedHash": "dbc209b0e54630d0c2a12af49ad80661a885036cb0dddc64f12ce4de02bc2292"
+    },
+    "super-pm-upgrade": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/super-pm-upgrade/SKILL.md",
+      "computedHash": "48c19834bfcdc66dcb38a51a21aa724308542bbb643d5e049a50fc65d998eecd"
+    },
+    "testing": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/testing/SKILL.md",
+      "computedHash": "a39feeb3bbff2d59e2d7ad8f4d6d92bf7e478413605614ffe7219f35631e7ac3"
+    },
+    "typescript": {
+      "source": "alexander-danilenko/cortex-ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/typescript/SKILL.md",
+      "computedHash": "25ff0b051e4766c37853ff8026735ff58b3efe107a9fe352c08c1bca88ba4b06"
+    },
+    "validate-idea": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/workflows/validate-idea/SKILL.md",
+      "computedHash": "55c627e65074ad2710cb604cfacedf5f50060f51cfd9670b009f163dea1d8060"
+    },
+    "write-prd": {
+      "source": "konglong87/superPM",
+      "sourceType": "github",
+      "skillPath": "skills/workflows/write-prd/SKILL.md",
+      "computedHash": "bff2b9daa85643a15d04549914c6144141cf8844c7dcbf8f3587a720578e4a0e"
+    }
+  }
+}

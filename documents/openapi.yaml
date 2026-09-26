@@ -1,0 +1,939 @@
+openapi: 3.0.3
+info:
+  title: Aplikasi To-Do List API
+  version: 1.0.0
+  description: |
+    Dokumentasi REST API untuk aplikasi To-Do List (Native PHP 8.2+ Clean MVC:
+    Controller → Service (Valitron) → Repository (Medoo/PostgreSQL) → Domain).
+
+    Referensi: `documents/PRD.md`.
+
+    Konvensi penting:
+    - Semua resource publik memakai **UUID**, BUKAN integer ID.
+    - Auth memakai **Split-Token Session** (`user_sessions`): cookie
+      `todolist_session=<selector>:<validator>`.
+    - Rate/lockout: login gagal berulang mengunci akun sementara
+      (`user_security.lockout_until`) → `423 Locked`.
+    - `DELETE /api/categories/{uuid}` aman: task terkait otomatis `category_id = NULL`
+      (`ON DELETE SET NULL`).
+  contact:
+    name: UCrazy
+    email: finder.ucup@gmail.com
+  license:
+    name: ISC
+servers:
+  - url: http://localhost:8000
+    description: Local (php -S public -t public)
+  - url: https://api.example.com
+    description: Production (ganti sesuai deploy)
+tags:
+  - name: Auth
+    description: Registrasi, login (split-token), logout
+  - name: Tasks
+    description: CRUD tugas + tandai selesai + reminders polling
+  - name: Categories
+    description: CRUD kategori (nama + warna)
+  - name: Dashboard
+    description: Analitik untuk ApexChartsJS (donut pending vs completed)
+  - name: User
+    description: Ubah username & password (verifikasi password lama)
+security:
+  - cookieAuth: []
+paths:
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Registrasi user baru
+      description: Membuat `users` + baris `user_security`. Hanya `username` & `password`.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              default:
+                value:
+                  username: ucup
+                  password: rahasia123
+      responses:
+        '201':
+          description: Registrasi berhasil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Username sudah dipakai
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                message: Username sudah dipakai
+                errors:
+                  username: Username sudah dipakai
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login (split-token session)
+      description: |
+        Verifikasi `password_verify()`. Saat sukses: buat baris `user_sessions`
+        (selector + hashed_validator), reset `failed_attempts`, tulis `audit_logs`.
+        Saat gagal: tambah `failed_attempts`, tulis `audit_logs`, bisa terkunci → 423.
+        Set cookie `todolist_session` via `Set-Cookie` header.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              default:
+                value:
+                  username: ucup
+                  password: rahasia123
+                  remember_me: false
+      responses:
+        '200':
+          description: Login berhasil (cookie session di-set)
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: todolist_session=<selector>:<validator>; HttpOnly; Path=/
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Kredensial salah
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                message: Username atau password salah
+        '423':
+          description: Akun terkunci sementara (brute-force protection)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                message: Akun terkunci, coba lagi dalam 5 menit
+                data:
+                  lockout_until: '2026-09-25T20:00:00Z'
+
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout (hapus session aktif)
+      responses:
+        '200':
+          description: Logout berhasil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+              example:
+                success: true
+                message: Logout berhasil
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/tasks:
+    get:
+      tags: [Tasks]
+      summary: List tugas milik user login
+      parameters:
+        - $ref: '#/components/parameters/StatusQuery'
+        - $ref: '#/components/parameters/CategoryUuidQuery'
+        - $ref: '#/components/parameters/PageQuery'
+        - $ref: '#/components/parameters/LimitQuery'
+      responses:
+        '200':
+          description: Daftar tugas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Tasks]
+      summary: Buat tugas baru
+      description: Submit via Axios dari modal Alpine.js + FrankenUI.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+            examples:
+              default:
+                value:
+                  title: Belajar PHP MVC
+                  description: Selesaikan TaskService + test
+                  category_uuid: 11111111-1111-4111-8111-111111111111
+                  due_date: '2026-09-26T09:00:00Z'
+                  reminder_minutes: 30
+      responses:
+        '201':
+          description: Tugas dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/tasks/reminders:
+    get:
+      tags: [Tasks]
+      summary: Tugas yang mendekati due_date (polling)
+      description: |
+        Dipanggil Alpine.js `setInterval` tiap 1 menit dari layout header.
+        Kriteria: `status=pending`, `due_date <= now + reminder_minutes`,
+        `is_reminded=false`. Backend otomatis set `is_reminded=TRUE`
+        agar ToastifyJS tidak muncul berulang.
+      responses:
+        '200':
+          description: Daftar pengingat
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, data]
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/tasks/{uuid}:
+    get:
+      tags: [Tasks]
+      summary: Detail tugas by UUID
+      parameters:
+        - $ref: '#/components/parameters/TaskUuid'
+      responses:
+        '200':
+          description: Detail tugas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Tasks]
+      summary: Edit tugas (full update)
+      parameters:
+        - $ref: '#/components/parameters/TaskUuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdateRequest'
+      responses:
+        '200':
+          description: Tugas diperbarui
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Tasks]
+      summary: Hapus tugas
+      description: Dipanggil via Axios `DELETE /api/tasks/{uuid}` setelah konfirmasi `<dialog>`.
+      parameters:
+        - $ref: '#/components/parameters/TaskUuid'
+      responses:
+        '200':
+          description: Tugas dihapus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+              example:
+                success: true
+                message: Tugas dihapus
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/tasks/{uuid}/complete:
+    patch:
+      tags: [Tasks]
+      summary: Tandai tugas selesai
+      parameters:
+        - $ref: '#/components/parameters/TaskUuid'
+      responses:
+        '200':
+          description: Tugas ditandai completed (`completed_at` diisi)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/tasks/{uuid}/reopen:
+    patch:
+      tags: [Tasks]
+      summary: Kembalikan tugas ke pending
+      parameters:
+        - $ref: '#/components/parameters/TaskUuid'
+      responses:
+        '200':
+          description: Tugas dikembalikan ke pending (`completed_at=null`)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/categories:
+    get:
+      tags: [Categories]
+      summary: List kategori milik user
+      responses:
+        '200':
+          description: Daftar kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Categories]
+      summary: Buat kategori
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreateRequest'
+            examples:
+              default:
+                value:
+                  name: Kuliah
+                  color: blue
+      responses:
+        '201':
+          description: Kategori dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/categories/{uuid}:
+    get:
+      tags: [Categories]
+      summary: Detail kategori by UUID
+      parameters:
+        - $ref: '#/components/parameters/CategoryUuid'
+      responses:
+        '200':
+          description: Detail kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Categories]
+      summary: Edit kategori (nama + warna)
+      parameters:
+        - $ref: '#/components/parameters/CategoryUuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdateRequest'
+      responses:
+        '200':
+          description: Kategori diperbarui
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Categories]
+      summary: Hapus kategori
+      description: Task yang memakai kategori otomatis `category_id=NULL` (Postgres ON DELETE SET NULL).
+      parameters:
+        - $ref: '#/components/parameters/CategoryUuid'
+      responses:
+        '200':
+          description: Kategori dihapus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+              example:
+                success: true
+                message: Kategori dihapus
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/dashboard/stats:
+    get:
+      tags: [Dashboard]
+      summary: Statistik pending vs completed
+      description: Di-return `DashboardController` dari `TaskService`, dirender sebagai Donut Chart ApexCharts.
+      responses:
+        '200':
+          description: Statistik dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStatsResponse'
+              example:
+                success: true
+                data:
+                  total: 10
+                  pending: 6
+                  completed: 4
+                  by_category:
+                    - category_uuid: 11111111-1111-4111-8111-111111111111
+                      category_name: Kuliah
+                      total: 7
+                      pending: 4
+                      completed: 3
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/user/username:
+    put:
+      tags: [User]
+      summary: Ubah username (Fitur 6)
+      description: Harus verifikasi password lama via `password_verify()` sebelum update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [new_username, current_password]
+              properties:
+                new_username:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  example: ucup_baru
+                current_password:
+                  type: string
+                  format: password
+                  example: rahasia123
+      responses:
+        '200':
+          description: Username diperbarui
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Username baru sudah dipakai
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/user/password:
+    put:
+      tags: [User]
+      summary: Ubah password (Fitur 7)
+      description: Verifikasi password lama, lalu simpan `password_hash()` baru.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [old_password, new_password]
+              properties:
+                old_password:
+                  type: string
+                  format: password
+                  example: rahasia123
+                new_password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: rahasiaBaru456
+      responses:
+        '200':
+          description: Password diperbarui (disarankan logout semua session lain)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+              example:
+                success: true
+                message: Password diperbarui
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Password lama salah / belum login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: todolist_session
+      description: Split-token session `selector:validator` (HttpOnly cookie).
+
+  parameters:
+    TaskUuid:
+      name: uuid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 22222222-2222-4222-8222-222222222222
+    CategoryUuid:
+      name: uuid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 11111111-1111-4111-8111-111111111111
+    StatusQuery:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [pending, completed]
+    CategoryUuidQuery:
+      name: category_uuid
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    PageQuery:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    LimitQuery:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  responses:
+    BadRequest:
+      description: Validasi Valitron gagal
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: Validasi gagal
+            errors:
+              title: Title wajib diisi
+    Unauthorized:
+      description: Belum login / session tidak valid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: Unauthorized
+    NotFound:
+      description: Resource UUID tidak ditemukan / bukan milik user
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: Data tidak ditemukan
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          example: ucup
+        password:
+          type: string
+          format: password
+          minLength: 6
+          example: rahasia123
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: ucup
+        password:
+          type: string
+          format: password
+          example: rahasia123
+        remember_me:
+          type: boolean
+          default: false
+          description: Perpanjang expires_at user_sessions
+    UserResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          example: 00000000-0000-4000-8000-000000000001
+        username:
+          type: string
+          example: ucup
+        status:
+          type: string
+          enum: [active, suspended]
+          example: active
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TaskCreateRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          example: Belajar PHP MVC
+        description:
+          type: string
+          nullable: true
+          example: Selesaikan TaskService + test
+        category_uuid:
+          type: string
+          format: uuid
+          nullable: true
+          example: 11111111-1111-4111-8111-111111111111
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2026-09-26T09:00:00Z'
+        reminder_minutes:
+          type: integer
+          minimum: 0
+          default: 30
+          example: 30
+    TaskUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        category_uuid:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          type: string
+          enum: [pending, completed]
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        reminder_minutes:
+          type: integer
+          minimum: 0
+    Task:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        title:
+          type: string
+          example: Belajar PHP MVC
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [pending, completed]
+          example: pending
+        category:
+          $ref: '#/components/schemas/Category'
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        reminder_minutes:
+          type: integer
+          example: 30
+        is_reminded:
+          type: boolean
+          example: false
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TaskResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Task'
+    TaskListResponse:
+      type: object
+      required: [success, data, meta]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        meta:
+          $ref: '#/components/schemas/Pagination'
+
+    CategoryCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 50
+          example: Kuliah
+        color:
+          type: string
+          maxLength: 20
+          default: zinc
+          example: blue
+    CategoryUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+        color:
+          type: string
+          maxLength: 20
+    Category:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Kuliah
+        color:
+          type: string
+          example: blue
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CategoryResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Category'
+    CategoryListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+
+    DashboardStatsResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required: [total, pending, completed]
+          properties:
+            total:
+              type: integer
+              example: 10
+            pending:
+              type: integer
+              example: 6
+            completed:
+              type: integer
+              example: 4
+            by_category:
+              type: array
+              items:
+                type: object
+                properties:
+                  category_uuid:
+                    type: string
+                    format: uuid
+                    nullable: true
+                  category_name:
+                    type: string
+                    nullable: true
+                    example: Kuliah
+                  total:
+                    type: integer
+                  pending:
+                    type: integer
+                  completed:
+                    type: integer
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 42
+
+    SuccessMessage:
+      type: object
+      required: [success, message]
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: OK
+    Error:
+      type: object
+      required: [success, message]
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Terjadi kesalahan
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+        data:
+          type: object
+          nullable: true

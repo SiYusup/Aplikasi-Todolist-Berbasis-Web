@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true">
+  <testsuites>
+    <testsuite name="unit">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="DB_HOST" value="localhost"/>
+    <env name="DB_PORT" value="5432"/>
+    <env name="DB_NAME" value="todolist"/>
+    <env name="DB_USER" value="postgres"/>
+    <env name="DB_PASS" value="ucup"/>
+  </php>
+</phpunit>

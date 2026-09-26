@@ -1,0 +1,18 @@
+# Environment (rahasia, jangan commit)
+.env
+
+# Dependensi Composer
+vendor/
+
+# Cache & log PHPUnit
+.phpunit.result.cache
+
+# Log
+*.log
+
+# OS & editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
