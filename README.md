@@ -12,7 +12,7 @@ routing → controller → service → repository → database → view.
 | Fitur | Keterangan |
 |---|---|
 | Autentikasi | Register & login (username + password), sesi split-token (`selector:validator`), proteksi brute-force (lockout 5 menit), audit log |
-| Tugas (CRUD) | Buat, lihat detail, edit, hapus, tandai selesai — semua berbasis **UUID** |
+| Tugas (CRUD) | Kartu tugas seragam: tombol **Detail** (modal lihat/edit/hapus) + **Selesai** langsung — semua berbasis **UUID** |
 | Kategori (CRUD) | Nama + warna via color picker (hex); badge kategori berwarna di kartu tugas |
 | History | Tugas yang selesai otomatis pindah dari Tugas ke halaman History (bisa dibuka lagi / hapus permanen) |
 | Dashboard | Kartu Total/Pending/Selesai, donut chart (ApexCharts), tabel per kategori |
@@ -65,7 +65,7 @@ public/index.php  (bramus/router: definisi route web + API)
 
 ```bash
 # 1. Clone repo
-git clone <url-repo-anda> aplikasi-todolist
+git clone https://github.com/SiYusup/Aplikasi-Todolist-Berbasis-Web.git aplikasi-todolist
 cd aplikasi-todolist
 
 # 2. Install dependensi PHP
@@ -77,9 +77,8 @@ psql -U postgres -d todolist -f database/schema.sql
 
 # 4. Konfigurasi environment
 cp .env.example .env
-# lalu sesuaikan isi .env bila perlu:
-# DB_HOST=localhost  DB_PORT=5432  DB_NAME=todolist
-# DB_USER=postgres   DB_PASS=ucup
+# lalu WAJIB isi DB_PASS di .env dengan password PostgreSQL milikmu
+# (nilai default lain: DB_HOST=localhost DB_PORT=5432 DB_NAME=todolist DB_USER=postgres)
 
 # 5. Jalankan server development
 php -S localhost:8000 -t public public/index.php
@@ -94,9 +93,10 @@ php -S localhost:8000 -t public public/index.php
 
 ## ⚙️ Konfigurasi (`.env`)
 
-| Key | Default | Keterangan |
+| Key | Default (`.env.example`) | Keterangan |
 |---|---|---|
-| `DB_HOST` / `DB_PORT` / `DB_NAME` / `DB_USER` / `DB_PASS` | `localhost` / `5432` / `todolist` / `postgres` / `ucup` | Koneksi PostgreSQL |
+| `DB_HOST` / `DB_PORT` / `DB_NAME` / `DB_USER` | `localhost` / `5432` / `todolist` / `postgres` | Koneksi PostgreSQL |
+| `DB_PASS` | `[isi password anda sendiri]` | **Wajib diisi** — tidak ada default demi keamanan |
 | `SESSION_COOKIE` | `todolist_session` | Nama cookie sesi split-token |
 | `SESSION_DAYS` / `REMEMBER_DAYS` | `7` / `30` | Masa berlaku sesi biasa / "ingat saya" |
 | `APP_URL` | `http://localhost:8000` | Base URL aplikasi |
@@ -182,12 +182,12 @@ Kredensial DB tes diambil dari environment (`DB_*`, default sama seperti `.env`)
 │   └── assets/app.js toast, i18n ID/EN, palet warna, helper
 ├── database/schema.sql
 ├── documents/        PRD.md, openapi.yaml, swagger.html
-├── tests/Service/    UserServiceTest, TaskServiceTest, CategoryServiceTest
+├── tests/            Service/ (User, Task, Category) + Repository/ (cadangan)
+├── .env.example      template konfigurasi (DB_PASS wajib diisi sendiri)
 ├── composer.json
 └── phpunit.xml
 ```
 
 ## 📄 Lisensi
 
-ISC — lihat `package.json`. Dibuat untuk pembelajaran oleh UCrazy
-(finder.ucup@gmail.com).
+MIT — lihat [`LICENSE`](LICENSE).
